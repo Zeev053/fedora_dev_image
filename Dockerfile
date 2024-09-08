@@ -98,6 +98,7 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install mypy  ; \
 	pip3 install pytest-cov  ; \
 	pip3 install scipy ; \
+	pip3 install allure-pytest ; \
 	pip3 install git+https://github.com/rancher/client-python.git@master ; \
 	pip3 install pygccxml clang pycparser gitpython; \
 	python3 -m pip install -U pip ; \ 
@@ -402,8 +403,8 @@ RUN cd /usr/bin/ && \
 
 # install intel oneapi
 RUN cd /tmp && mkdir oneapi_install && cd oneapi_install && \
- 	wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/7deeaac4-f605-4bcf-a81b-ea7531577c61/l_BaseKit_p_2023.1.0.46401_offline.sh && \
-	sh ./l_BaseKit_p_2023.1.0.46401_offline.sh -f installer/ -a -s --eula accept --components intel.oneapi.lin.tbb.devel && \
+wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/e6ff8e9c-ee28-47fb-abd7-5c524c983e1c/l_BaseKit_p_2024.2.1.100_offline.sh && \
+	sh ./l_BaseKit_p_2024.2.1.100_offline.sh -f installer/ -a -s --eula accept  && \
 	cd /tmp && rm -rf oneapi_install
 	#echo "source /opt/intel/oneapi/setvars.sh" >> ~/.bashrc
 
