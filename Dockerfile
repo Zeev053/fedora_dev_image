@@ -3,7 +3,7 @@ FROM zeevb/dev_docker:C_14.02__gcc8.5 As GCC8.5-Image
 
 # ---------------------------------------------------
 
-FROM fedora:41
+FROM fedora:42
 
 USER 0
 
@@ -99,16 +99,17 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install pytest-cov  ; \
 	pip3 install scipy ; \
 	pip3 install allure-pytest ; \
+	pip3 install ansible ; \
 	pip3 install git+https://github.com/rancher/client-python.git@master ; \
 	pip3 install pygccxml clang pycparser gitpython; \
 	python3 -m pip install -U pip ; \ 
 	#
 	#
-    dnf -y install glibc libstdc++ libstdc++-docs libgcc glibc-langpack-en gcc gcc-c++ gdb sudo openssl openssl-devel net-tools bind-utils \
+    dnf -y install glibc libstdc++ libstdc++-docs libgcc glibc-langpack-en gcc gcc-c++ gdb sudo openssl openssl-devel net-tools bind-utils gdb-gdbserver ipcgull-devel\
   	   tcpdump  \
 	   qt5-qtbase-devel \
 	   qt5-qtwebkit-devel libstdc++.i686 glibc.i686 \
-	   qt-devel vim-enhanced wget iperf3 iperf nano openssh libXt-devel xorg-x11-server-Xvfb \
+	   qt-devel vim-enhanced vim-ansible wget iperf3 iperf nano openssh libXt-devel xorg-x11-server-Xvfb \
        iputils openssh-server openssh-clients rsync nc traceroute nmap \
        graphviz texlive texlive-latex libcgroup libcgroup-tools opencv-devel \
 	   ninja-build doxygen doxygen-latex doxygen-doxywizard bash-completion moreutils \
@@ -116,7 +117,9 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	   qcachegrind hostname motif motif-devel gedit colordiff wdiff meld nfs-utils \
 	   cifs-utils samba-client samba xstream perf valgrind java-devel ncurses-devel xterm \
 	   flex bison binutils-devel elfutils-devel elfutils-libelf-devel texinfo zlib-devel cmake pkgconfig hotspot rr \
+	   numactl-devel numactl-libs numactl numatop tbb-bind topline \
 	   castxml clang clang-analyzer clang-devel clang-libs clang-resource-filesystem clang-tools-extra python3-clang clang-tools-extra-devel \
+	   helm glab\
 	   isl-devel.x86_64 isl-devel.i686 isl.i686 isl.x86_64 gmp gmp-devel mpfr  mpfr-devel libmpc libmpc-devel libgphobos-static gcc-gnat gcc-gdc glibc-devel.i686 dejagnu autogen  && \
     # dnf -y --releasever=37 install kompose  && \
     dnf install -y ngrep hiera lsyncd sshpass lcov jq ccache lapack-devel dwarves  && \
@@ -187,75 +190,6 @@ RUN pushd /tmp/ && \
 #	cd /infra ; git clone https://github.com/bilke/cmake-modules.git
 
 
-# Install Conan for packaging C++ binaries
-# RUN echo which python3: ; \ 
-# 	which python3 ; \ 
-# 	echo python3 --version ; \ 
-# 	python3 --version ; \ 
-# 	python3 -m pip install -U pip ; \ 
-# 	pip3 install wheel ; \
-# 	pip3 install twine ; \
-# 	pip3 install pytest-cov ; \
-# 	pip3 install pytest-spec ; \
-# 	pip3 install conan ; \
-# 	pip3 install  matplotlib  ; \
-# 	pip3 install elasticsearch  ; \
-# 	pip3 install selenium  ; \
-# 	pip3 install pika  ; \
-# 	pip3 install rticonnextdds-connector  ; \
-#     pip3 install numpy  ; \
-# 	pip3 install junit-xml  ; \
-# 	pip3 install unittest2py3k  ; \
-# 	pip3 install unittest2  ; \
-# 	pip3 install unittest-xml-reporting  ; \
-# 	pip3 install pytest  ; \
-# 	pip3 install nose  ; \
-# 	pip3 install tox  ; \
-# 	pip3 install pandas  ; \
-# 	pip3 install xlrd  ; \
-# 	pip3 install jira  ; \
-# 	pip3 install debugpy  ; \
-# 	pip3 install docker  ; \
-# 	pip3 install kubernetes  ; \
-# 	pip3 install docker-compose  ; \
-# 	pip3 install colorama  ; \
-# 	pip3 install gcovr  ; \
-# 	pip3 install junitparser  ; \
-# 	pip3 install colorlog  ; \
-# 	pip3 install plotly  ; \
-# 	pip3 install yq  ; \
-# 	pip3 install xq  ; \
-# 	pip3 install hq  ; \
-# 	pip3 install pick  ; \
-# 	pip3 install dominate  ; \
-# 	pip3 install python-git  ; \
-# 	pip3 install tk  ; \
-# 	pip3 install west  ; \
-# 	pip3 install mat4py  ; \
-# 	pip3 install matplotlib  ; \
-# 	pip3 install ipython  ; \
-# 	pip3 install jupyter  ; \
-# 	pip3 install sympy  ; \
-# 	pip3 install nose  ; \
-# 	pip3 install python-gitlab  ; \
-# 	pip3 install psutil  ; \
-# 	pip3 install flask  ; \
-# 	pip3 install gitlabber  ; \
-# 	pip3 install conan-package-tools  ; \
-# 	pip3 install python-jenkins  ; \
-# 	pip3 install rtpy  ; \
-# 	pip3 install flake8  ; \
-# 	pip3 install python-engineio  ; \
-# 	pip3 install bidict  ; \
-# 	pip3 install socketio  ; \
-# 	pip3 install Flask-SocketIO  ; \
-# 	pip3 install mypy  ; \
-# 	pip3 install pytest-cov  ; \
-# 	pip3 install scipy ; \
-# 	pip3 install git+https://github.com/rancher/client-python.git@master ; \
-# 	pip3 install pygccxml clang pycparser gitpython; \
-# 	python3 -m pip install -U pip ; \ 
-#     rm -r /root/.cache
 
 # Install Boost
 RUN pushd /tmp/ && \
