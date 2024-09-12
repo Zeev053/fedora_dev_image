@@ -3,14 +3,14 @@ FROM zeevb/dev_docker:C_14.02__gcc8.5 As GCC8.5-Image
 
 # ---------------------------------------------------
 
-FROM fedora:42
+FROM fedora:40
 
 USER 0
 
 COPY --from=GCC8.5-Image /usr/local/gcc/gcc8.5 /usr/local/gcc/gcc8.5
 
 #ARG CMAKE_VERSION=3.26.0
-ARG GTEST_VERSION=1.13.0
+ARG GTEST_VERSION=1.15.2
 ARG BOOST_VERSION_DOT=1.86.0
 ARG BOOST_VERSION_UNDERSCORE=1_86_0
 ARG BENCHMARK_VERSION=1.8.0
@@ -102,9 +102,19 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install ansible ; \
 	pip3 install git+https://github.com/rancher/client-python.git@master ; \
 	pip3 install pygccxml clang pycparser gitpython; \
-	python3 -m pip install -U pip ; \ 
+	python3 -m pip install -U pip ; #  
+
 	#
+	# Prepare OneAPI repo
+RUN echo [oneAPI] > /etc/yum.repos.d/oneAPI.repo ; \ 
+	name=Intel® oneAPI repository >> /etc/yum.repos.d/oneAPI.repo ; \ 
+	baseurl=https://yum.repos.intel.com/oneapi >> /etc/yum.repos.d/oneAPI.repo ; \ 
+	enabled=1 >> /etc/yum.repos.d/oneAPI.repo ; \ 
+	gpgcheck=1 >> /etc/yum.repos.d/oneAPI.repo ; \ 
+	repo_gpgcheck=1 >> /etc/yum.repos.d/oneAPI.repo ; \ 
+	gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB >> /etc/yum.repos.d/oneAPI.repo ; \ 
 	#
+	# Install all packages
     dnf -y install glibc libstdc++ libstdc++-docs libgcc glibc-langpack-en gcc gcc-c++ gdb sudo openssl openssl-devel net-tools bind-utils gdb-gdbserver ipcgull-devel\
   	   tcpdump  \
 	   qt5-qtbase-devel \
@@ -119,8 +129,10 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	   flex bison binutils-devel elfutils-devel elfutils-libelf-devel texinfo zlib-devel cmake pkgconfig hotspot rr \
 	   numactl-devel numactl-libs numactl numatop tbb-bind topline \
 	   castxml clang clang-analyzer clang-devel clang-libs clang-resource-filesystem clang-tools-extra python3-clang clang-tools-extra-devel \
-	   helm glab\
-	   isl-devel.x86_64 isl-devel.i686 isl.i686 isl.x86_64 gmp gmp-devel mpfr  mpfr-devel libmpc libmpc-devel libgphobos-static gcc-gnat gcc-gdc glibc-devel.i686 dejagnu autogen  && \
+	   helm glab \
+	   isl-devel.x86_64 isl-devel.i686 isl.i686 isl.x86_64 gmp gmp-devel \
+	   mpfr  mpfr-devel libmpc libmpc-devel \
+	   libgphobos-static gcc-gnat gcc-gdc glibc-devel.i686 dejagnu autogen npm && \
     # dnf -y --releasever=37 install kompose  && \
     dnf install -y ngrep hiera lsyncd sshpass lcov jq ccache lapack-devel dwarves  && \
     dnf install -y libasan libasan-static libatomic libatomic-static liblsan liblsan-static libtsan libtsan-static libubsan libubsan-static && \
@@ -190,16 +202,50 @@ RUN pushd /tmp/ && \
 #	cd /infra ; git clone https://github.com/bilke/cmake-modules.git
 
 
+# Install google test
+RUN pushd /tmp/ && \
+    wget https://github.com/google/googletest/releases/download/v${GTEST_VERSION}/googletest-${GTEST_VERSION}.tar.gz  && \
+	tar zxvf googletest-${GTEST_VERSION}.tar.gz && \
+	mkdir googleBuild  && \
+	cd googleBuild  && \
+	cmake /tmp/googletest-${GTEST_VERSION}  && \
+	cmake -Dgtest_build_samples=ON /tmp/googletest-${GTEST_VERSION}  && \
+	make install && \
+	make clean	 && \
+	cd /tmp/	 && \
+	rm -rf v${GTEST_VERSION}.tar.gz && \
+	rm -rf googletest-${GTEST_VERSION} && \
+	rm -rf googleBuild && \
+	popd
 
+
+## Install google benchmark
+RUN pushd /tmp/ && \
+	mkdir benchmark_install && cd benchmark_install && \
+    wget https://github.com/google/benchmark/archive/refs/tags/v${BENCHMARK_VERSION}.tar.gz  && \
+    tar zxvf v${BENCHMARK_VERSION}.tar.gz && \
+	cd benchmark-${BENCHMARK_VERSION}  && \
+	cmake -E make_directory "build"  && \
+	cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DBENCHMARK_ENABLE_ASSEMBLY_TESTS=off -DCMAKE_BUILD_TYPE=Release -S . -B "build" && \
+	cmake --build "build" --config Release -- "-j20" && \
+	cmake -E chdir "build" ctest --build-config Release && \
+	sudo cmake --build "build" --config Release --target install && \
+	cmake --build "build" --config Release --target clean && \
+	cd /tmp/	 && \
+	rm -rf benchmark_install && \
+	popd
+
+
+# wget https://boostorg.jfrog.io/artifactory/main/release/${BOOST_VERSION_DOT}/source/boost_${BOOST_VERSION_UNDERSCORE}.tar.gz  && \
 # Install Boost
 RUN pushd /tmp/ && \
-	wget https://boostorg.jfrog.io/artifactory/main/release/${BOOST_VERSION_DOT}/source/boost_${BOOST_VERSION_UNDERSCORE}.tar.gz  && \
-    tar zxf boost_${BOOST_VERSION_UNDERSCORE}.tar.gz && \
-	cd boost_${BOOST_VERSION_UNDERSCORE} && \
 	echo gcc version: && \
 	gcc --version && \
 	echo g++ version: && \	
 	g++ --version && \	
+	wget https://archives.boost.io/release/${BOOST_VERSION_DOT}/source/boost_${BOOST_VERSION_UNDERSCORE}.tar.gz  && \	
+    tar zxf boost_${BOOST_VERSION_UNDERSCORE}.tar.gz && \
+	cd boost_${BOOST_VERSION_UNDERSCORE} && \
 	echo Start boost installation: && \	
 	echo Call bootstrap.sh: && \
 	./bootstrap.sh --with-toolset=gcc && \
@@ -229,38 +275,6 @@ RUN pushd /tmp/ && \
 # 		popd
 
 #        https://github.com/google/googletest/archive/refs/tags/v1.13.0.tar.gz
-# Install google test
-RUN pushd /tmp/ && \
-    wget https://github.com/google/googletest/archive/refs/tags/v${GTEST_VERSION}.tar.gz  && \
-    tar zxvf v${GTEST_VERSION}.tar.gz && \
-	mkdir googleBuild  && \
-	cd googleBuild  && \
-	cmake /tmp/googletest-${GTEST_VERSION}  && \
-	cmake -Dgtest_build_samples=ON /tmp/googletest-${GTEST_VERSION}  && \
-	make install && \
-	make clean	 && \
-	cd /tmp/	 && \
-	rm -rf v${GTEST_VERSION}.tar.gz && \
-	rm -rf googletest-${GTEST_VERSION} && \
-	rm -rf googleBuild && \
-	popd
-
-
-## Install google benchmark
-RUN pushd /tmp/ && \
-	mkdir benchmark_install && cd benchmark_install && \
-    wget https://github.com/google/benchmark/archive/refs/tags/v${BENCHMARK_VERSION}.tar.gz  && \
-    tar zxvf v${BENCHMARK_VERSION}.tar.gz && \
-	cd benchmark-${BENCHMARK_VERSION}  && \
-	cmake -E make_directory "build"  && \
-	cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DBENCHMARK_ENABLE_ASSEMBLY_TESTS=off -DCMAKE_BUILD_TYPE=Release -S . -B "build" && \
-	cmake --build "build" --config Release -- "-j20" && \
-	cmake -E chdir "build" ctest --build-config Release && \
-	sudo cmake --build "build" --config Release --target install && \
-	cmake --build "build" --config Release --target clean && \
-	cd /tmp/	 && \
-	rm -rf benchmark_install && \
-	popd
 
 # Intall vue
 # RUN npm install -g @vue/cli yarn 
@@ -337,9 +351,14 @@ RUN cd /usr/bin/ && \
 
 # install intel oneapi
 RUN cd /tmp && mkdir oneapi_install && cd oneapi_install && \
-wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/e6ff8e9c-ee28-47fb-abd7-5c524c983e1c/l_BaseKit_p_2024.2.1.100_offline.sh && \
+	#
+	wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/e6ff8e9c-ee28-47fb-abd7-5c524c983e1c/l_BaseKit_p_2024.2.1.100_offline.sh && \
 	sh ./l_BaseKit_p_2024.2.1.100_offline.sh -f installer/ -a -s --eula accept  && \
-	cd /tmp && rm -rf oneapi_install
+	#
+	wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/d461a695-6481-426f-a22f-b5644cd1fa8b/l_HPCKit_p_2024.2.1.79_offline.sh  && \
+	sh ./l_HPCKit_p_2024.2.1.79_offline.sh -f installer/ -a -s --eula accept && \
+	#
+	cd /tmp && rm -rf oneapi_install 
 	#echo "source /opt/intel/oneapi/setvars.sh" >> ~/.bashrc
 
 
