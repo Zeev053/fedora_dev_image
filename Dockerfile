@@ -106,13 +106,14 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 
 	#
 	# Prepare OneAPI repo
-RUN echo [oneAPI] > /etc/yum.repos.d/oneAPI.repo ; \ 
-	name=Intel® oneAPI repository >> /etc/yum.repos.d/oneAPI.repo ; \ 
-	baseurl=https://yum.repos.intel.com/oneapi >> /etc/yum.repos.d/oneAPI.repo ; \ 
-	enabled=1 >> /etc/yum.repos.d/oneAPI.repo ; \ 
-	gpgcheck=1 >> /etc/yum.repos.d/oneAPI.repo ; \ 
-	repo_gpgcheck=1 >> /etc/yum.repos.d/oneAPI.repo ; \ 
-	gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB >> /etc/yum.repos.d/oneAPI.repo ; \ 
+RUN \ 
+	# echo [oneAPI] > /etc/yum.repos.d/oneAPI.repo ; \ 
+	# name=Intel® oneAPI repository >> /etc/yum.repos.d/oneAPI.repo ; \ 
+	# baseurl=https://yum.repos.intel.com/oneapi >> /etc/yum.repos.d/oneAPI.repo ; \ 
+	# enabled=1 >> /etc/yum.repos.d/oneAPI.repo ; \ 
+	# gpgcheck=1 >> /etc/yum.repos.d/oneAPI.repo ; \ 
+	# repo_gpgcheck=1 >> /etc/yum.repos.d/oneAPI.repo ; \ 
+	# gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB >> /etc/yum.repos.d/oneAPI.repo ; \ 
 	#
 	# Install all packages
     dnf -y install glibc libstdc++ libstdc++-docs libgcc glibc-langpack-en gcc gcc-c++ gdb sudo openssl openssl-devel net-tools bind-utils gdb-gdbserver ipcgull-devel\
@@ -349,17 +350,17 @@ RUN cd /usr/bin/ && \
 	rm -f sonar-scanner-cli-4.6.2.2472-linux.zip && \
 	/usr/bin/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -v 
 
-# install intel oneapi
-RUN cd /tmp && mkdir oneapi_install && cd oneapi_install && \
-	#
-	wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/e6ff8e9c-ee28-47fb-abd7-5c524c983e1c/l_BaseKit_p_2024.2.1.100_offline.sh && \
-	sh ./l_BaseKit_p_2024.2.1.100_offline.sh -f installer/ -a -s --eula accept  && \
-	#
-	wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/d461a695-6481-426f-a22f-b5644cd1fa8b/l_HPCKit_p_2024.2.1.79_offline.sh  && \
-	sh ./l_HPCKit_p_2024.2.1.79_offline.sh -f installer/ -a -s --eula accept && \
-	#
-	cd /tmp && rm -rf oneapi_install 
-	#echo "source /opt/intel/oneapi/setvars.sh" >> ~/.bashrc
+# # install intel oneapi
+# RUN cd /tmp && mkdir oneapi_install && cd oneapi_install && \
+# 	#
+# 	wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/e6ff8e9c-ee28-47fb-abd7-5c524c983e1c/l_BaseKit_p_2024.2.1.100_offline.sh && \
+# 	sh ./l_BaseKit_p_2024.2.1.100_offline.sh -f installer/ -a -s --eula accept  && \
+# 	#
+# 	wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/d461a695-6481-426f-a22f-b5644cd1fa8b/l_HPCKit_p_2024.2.1.79_offline.sh  && \
+# 	sh ./l_HPCKit_p_2024.2.1.79_offline.sh -f installer/ -a -s --eula accept && \
+# 	#
+# 	cd /tmp && rm -rf oneapi_install 
+# 	#echo "source /opt/intel/oneapi/setvars.sh" >> ~/.bashrc
 
 
 EXPOSE 22
