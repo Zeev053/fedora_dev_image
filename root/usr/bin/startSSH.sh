@@ -328,7 +328,35 @@ then
         fi
     fi
 
-    echo 
+    echo
+    echo Check if user id already exist and delete it
+    if [[ $(getent passwd ${user_id}) ]]; then
+        echo "The user id of the user: ${user_name} already exist, delete it (current user name: $(id -un $user_id))"
+        userdel -f $(id -un $user_id)
+    fi
+
+    echo
+    echo Check if user already exist and delete it
+    if [[ $(getent passwd ${user_name}) ]]; then
+        echo "The user name: ${user_name} already exist, delete it"
+        userdel -f ${user_name}
+    fi
+
+    echo
+    echo Check if group already exist and delete it
+    if [[ $(getent group ${user_g_name}) ]]; then
+        echo "The group name the group: ${user_g_name} already exist, delete it"
+        groupdel -f ${user_g_name}
+    fi
+
+    echo
+    echo Check if group id already exist and delete it
+    if [[ $(getent group ${user_g_id}) ]]; then
+        echo "The group id of the group: ${user_g_name} already exist, delete it (current user name: $(getent group $user_g_name | cut -d: -f1)" 
+        groupdel -f $(getent group $user_g_name | cut -d: -f1)
+    fi
+
+    echo
     echo Create new group ${user_g_name}
 	groupadd -g ${user_g_id} ${user_g_name}
     echo 

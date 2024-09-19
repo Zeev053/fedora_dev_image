@@ -1,0 +1,36 @@
+FROM zeevb/dev_docker:C_14.01
+
+USER 0
+
+COPY elta.co.il.pem /etc/pki/ca-trust/source/anchors/elta.co.il.pem
+RUN update-ca-trust && export SSL_CERT_FILE=/temp/aura-docker-image/elta.co.il.pem
+
+
+RUN dnf -y clean all; dnf -y update ; \
+	dnf install -y clang clang-analyzer clang-libs clang-resource-filesystem clang-tools-extra python3-clang  \
+	isl-devel.x86_64 isl-devel.i686 isl.i686 isl.x86_64 gmp gmp-devel mpfr mpfr-devel libmpc libmpc-devel gcc-gnat glibc-devel.i686 dejagnu autogen   
+
+
+RUN cd /tmp && \
+    wget https://github.com/gcc-mirror/gcc/archive/refs/tags/releases/gcc-8.5.0.tar.gz  && \
+	tar xvf gcc-8.5.0.tar.gz  && \
+	echo "files in /tmp:" && \
+	ls -l && \
+	echo && \
+	mkdir build_gcc_8.5.0 && \
+	cd build_gcc_8.5.0 && \
+	# mkdir -p /usr/local/gcc/gcc8.5 && \
+	echo "Run gcc configure:" && \
+    ../gcc-releases-gcc-8.5.0/configure --enable-languages=c,c++,objc,obj-c++ --prefix=/usr/local/gcc/gcc8.5/ --program-suffix=-8.5  --enable-shared --disable-libquadmath --disable-libquadmath-support && \
+	echo && \
+	echo && \
+	echo "run make" && \
+    make -j 8 && \
+	echo && \
+	echo && \
+    make install && \
+	echo && \
+	cd ..  && \
+	rm -rf build_gcc_8.5.0 && \
+	rm -rf gcc-releases-gcc-8.5.0 && \
+	rm -rf xvf gcc-8.5.0.tar.gz

@@ -1,0 +1,16 @@
+services:
+  fedora-dev:
+    image: ${rt_image}
+    network_mode: "host"
+    volumes:
+      - /home/zeev/:/temp
+    environment:
+      RTD_FULL_NAME: ${RTD_FULL_NAME}
+      RTD_USER_NAME: ${USER}
+      RTD_USER_ID: ${RTD_USER_ID}
+      RTD_USER_G_ID: ${RTD_USER_G_ID}
+      RTD_USER_G_NAME: ${RTD_USER_G_NAME}
+      RTD_USER_SHELL: /bin/bash
+      RTD_SSH_KEY_BASE64: ${RTD_SSH_KEY_BASE64}
+      RTD_SSH_PORT: 2025
+      RTD_USER_PASSWORD_SHOULD_NOT_EXIST: true

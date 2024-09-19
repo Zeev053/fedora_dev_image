@@ -13,12 +13,12 @@ COPY --from=GCC8.5-Image /usr/local/gcc/gcc8.5 /usr/local/gcc/gcc8.5
 ARG GTEST_VERSION=1.15.2
 ARG BOOST_VERSION_DOT=1.86.0
 ARG BOOST_VERSION_UNDERSCORE=1_86_0
-ARG BENCHMARK_VERSION=1.8.0
+ARG BENCHMARK_VERSION=1.9.0
 #ENV NODE_EXTRA_CA_CERTS=/etc/ca-bundle.crt
 #ENV REQUESTS_CA_BUNDLE=/etc/ca-bundle.crt
 #ENV SSL_CERT_FILE=/etc/ca-bundle.crt
 
-LABEL name="fedora41" \
+LABEL name="fedora40" \
 	  GoogleTestVersion="$GTEST_VERSION" \
 	  BoostVersion="$BOOST_VERSION_DOT" \
 	  #CMakeVersion="$CMAKE_VERSION" \
@@ -44,8 +44,9 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install pytest-cov ; \
 	pip3 install pytest-spec ; \
 	pip3 install conan ; \
-	pip3 install  matplotlib  ; \
-	pip3 install elasticsearch  ; \
+	pip3 install rich ; \
+	pip3 install matplotlib ; \
+	pip3 install elasticsearch ; \
 	pip3 install selenium  ; \
 	pip3 install pika  ; \
 	pip3 install rticonnextdds-connector  ; \
@@ -100,8 +101,10 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install scipy ; \
 	pip3 install allure-pytest ; \
 	pip3 install ansible ; \
+	pip3 install Django Jinja2 Scrapy Requests Dash; \	
 	pip3 install git+https://github.com/rancher/client-python.git@master ; \
 	pip3 install pygccxml clang pycparser gitpython; \
+	pip3 install textual-serve textual-dev toolong faqtory tailless pytest-textual-snapshot declare; \
 	python3 -m pip install -U pip ; #  
 
 	#
@@ -130,7 +133,7 @@ RUN \
 	   flex bison binutils-devel elfutils-devel elfutils-libelf-devel texinfo zlib-devel cmake pkgconfig hotspot rr \
 	   numactl-devel numactl-libs numactl numatop tbb-bind topline \
 	   castxml clang clang-analyzer clang-devel clang-libs clang-resource-filesystem clang-tools-extra python3-clang clang-tools-extra-devel \
-	   helm glab \
+	   helm glab bat ncdu fd-find ripgrep \
 	   isl-devel.x86_64 isl-devel.i686 isl.i686 isl.x86_64 gmp gmp-devel \
 	   mpfr  mpfr-devel libmpc libmpc-devel \
 	   libgphobos-static gcc-gnat gcc-gdc glibc-devel.i686 dejagnu autogen npm && \
@@ -214,7 +217,7 @@ RUN pushd /tmp/ && \
 	make install && \
 	make clean	 && \
 	cd /tmp/	 && \
-	rm -rf v${GTEST_VERSION}.tar.gz && \
+	rm -f googletest-${GTEST_VERSION}.tar.gz && \
 	rm -rf googletest-${GTEST_VERSION} && \
 	rm -rf googleBuild && \
 	popd
@@ -322,17 +325,21 @@ RUN mkdir -p /var/run/sshd; \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config; \
 	sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config; \
 	sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config; \
+	sed -i 's/#AllowTcpForwarding yes/AllowTcpForwarding yes/' /etc/ssh/sshd_config; \
+	sed -i 's/#AllowAgentForwarding yes/AllowAgentForwarding yes/' /etc/ssh/sshd_config; \
+#
     mkdir -p /root/.ssh/; \
     rm -f /var/lib/rpm/.rpm.lock; \
     echo "StrictHostKeyChecking=no" > /root/.ssh/config; \
     echo "UserKnownHostsFile=/dev/null" >> /root/.ssh/config; \
+	chmod 777 /tmp; \
 #     /usr/bin/ssh-keygen -t rsa -f /root/.ssh/id_rsa -N ''; \
 #     /usr/bin/ssh-keygen -y -t rsa -f /root/.ssh/id_rsa > ~/.ssh/id_rsa.pub; \
 #     /usr/bin/cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys; \
 #     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys; \
 #     chmod a-r /root/.ssh/authorized_keys; \
 #     chmod g-r /root/.ssh/authorized_keys; \ 
-
+#
     mkdir -p /home/kube/.ssh/; \
     echo "StrictHostKeyChecking=no" > /home/kube/.ssh/config; \
     echo "UserKnownHostsFile=/dev/null" >> /home/kube/.ssh/config; \
