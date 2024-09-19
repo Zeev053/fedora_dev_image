@@ -281,11 +281,15 @@ then
             user_password=$pass_fun
         fi
     else
+
+        echo Currently do not touch the PermitRootLogin
+
         # PermitRootLogin prohibit-password
         # PasswordAuthentication no
-        echo Update ssh to disable password authentication to root:
-        sed -i 's/PermitRootLogin .*$/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
+        # echo Update ssh to disable password authentication to root:
+        # sed -i 's/PermitRootLogin .*$/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
         # sed -i 's/PasswordAuthentication *.$/PasswordAuthentication no/' /etc/ssh/sshd_config
+
     fi
 
 	echo
