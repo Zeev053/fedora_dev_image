@@ -140,6 +140,7 @@ done
 # *** RTD_USER_GITLAB_TOKEN_SHOULD_EXIST ***
 # *** RTD_INSTALL_VSCODE_SERVER ***
 
+echo whoami: $(whoami)
 echo
 echo _______________________________________
 echo
@@ -403,19 +404,19 @@ then
         # Updte public key to authorized_keys in order to use ssh session with ssh key
         cat id_rsa.pub > /home/${user_name}/.ssh/authorized_keys
         
-        ssh-keyscan -t rsa -p 122 gitlab.tbd > /home/${user_name}/.ssh/known_hosts
+        # ssh-keyscan -t rsa -p 122 gitlab.tbd > /home/${user_name}/.ssh/known_hosts
         echo "chown ${user_name}:${user_g_name} /home/${user_name}/.ssh/id_rsa"
         chown ${user_name}:${user_g_name} /home/${user_name}/.ssh/known_hosts
         chown -R ${user_name}:${user_g_name} /home/${user_name}/.ssh
 
 		# copy to root
-		sudo cp -f /home/${user_name}/.ssh/id_rsa /root/.ssh/id_rsa
-		sudo cp -f /home/${user_name}/.ssh/id_rsa.pub /root/.ssh/id_rsa.pub
-		sudo cp -f /home/${user_name}/.ssh/authorized_keys /root/.ssh/authorized_keys
-		sudo chown root:root /root/.ssh/id_rsa
-		sudo chown root:root /root/.ssh/id_rsa.pub
-		sudo chown root:root /root/.ssh/authorized_keys
-		sudo chmod 600 /root/.ssh/id_rsa
+		cp -f /home/${user_name}/.ssh/id_rsa /root/.ssh/id_rsa
+		cp -f /home/${user_name}/.ssh/id_rsa.pub /root/.ssh/id_rsa.pub
+		cp -f /home/${user_name}/.ssh/authorized_keys /root/.ssh/authorized_keys
+		chown root:root /root/.ssh/id_rsa
+		chown root:root /root/.ssh/id_rsa.pub
+		chown root:root /root/.ssh/authorized_keys
+		chmod 600 /root/.ssh/id_rsa
 	fi
     
     echo 

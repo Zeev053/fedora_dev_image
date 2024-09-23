@@ -101,6 +101,8 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install scipy ; \
 	pip3 install allure-pytest ; \
 	pip3 install ansible ; \
+	pip3 install tzdata ; \
+	pip3 install numa ; \
 	pip3 install Django Jinja2 Scrapy Requests Dash; \	
 	pip3 install git+https://github.com/rancher/client-python.git@master ; \
 	pip3 install pygccxml clang pycparser gitpython; \
@@ -131,11 +133,12 @@ RUN \
 	   qcachegrind hostname motif motif-devel gedit colordiff wdiff meld nfs-utils \
 	   cifs-utils samba-client samba xstream perf valgrind java-devel ncurses-devel xterm \
 	   flex bison binutils-devel elfutils-devel elfutils-libelf-devel texinfo zlib-devel cmake pkgconfig hotspot rr \
-	   numactl-devel numactl-libs numactl numatop tbb-bind topline \
+	   numad numactl-devel numactl-libs numactl numatop tbb-bind topline \
 	   castxml clang clang-analyzer clang-devel clang-libs clang-resource-filesystem clang-tools-extra python3-clang clang-tools-extra-devel \
-	   helm glab bat ncdu fd-find ripgrep \
+	   helm glab bat ncdu fd-find ripgrep chrony ntpsec \
 	   isl-devel.x86_64 isl-devel.i686 isl.i686 isl.x86_64 gmp gmp-devel \
-	   mpfr  mpfr-devel libmpc libmpc-devel \
+	   mpfr  mpfr-devel libmpc libmpc-devel hwloc hwloc-devel hwloc-gui hwloc-plugins \
+	   memkind-devel pciutils-devel pciutils pciutils-devel-static pciutils-libs pcm \
 	   libgphobos-static gcc-gnat gcc-gdc glibc-devel.i686 dejagnu autogen npm && \
     # dnf -y --releasever=37 install kompose  && \
     dnf install -y ngrep hiera lsyncd sshpass lcov jq ccache lapack-devel dwarves  && \
