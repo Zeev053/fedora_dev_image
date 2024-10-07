@@ -29,8 +29,6 @@ RUN curl  https://netfree.link/dl/unix-ca.sh | sh && update-ca-trust
  
 
 RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
-    dnf -y group install "c-development" "development-tools"  && \
-    dnf -y install man man-pages man-db --setopt='tsflags='  && \
 	dnf -y install python3 python3-pip python3-devel	 && \
 	#
 	#
@@ -43,6 +41,7 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install twine ; \
 	pip3 install pytest-cov ; \
 	pip3 install pytest-spec ; \
+	pip3 install six==1.13.0 ; \
 	pip3 install conan ; \
 	pip3 install rich ; \
 	pip3 install matplotlib ; \
@@ -107,7 +106,9 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install git+https://github.com/rancher/client-python.git@master ; \
 	pip3 install pygccxml clang pycparser gitpython; \
 	pip3 install textual-serve textual-dev toolong faqtory tailless pytest-textual-snapshot declare; \
-	python3 -m pip install -U pip ; #  
+	python3 -m pip install -U pip  && \
+    dnf -y group install "c-development" "development-tools"  && \
+    dnf -y install man man-pages man-db --setopt='tsflags=' 
 
 	#
 	# Prepare OneAPI repo
