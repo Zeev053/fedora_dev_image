@@ -41,7 +41,7 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install twine ; \
 	pip3 install pytest-cov ; \
 	pip3 install pytest-spec ; \
-	pip3 install six==1.13.0 ; \
+	pip3 install six ; \
 	pip3 install conan ; \
 	pip3 install rich ; \
 	pip3 install matplotlib ; \
@@ -63,7 +63,7 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install debugpy  ; \
 	pip3 install docker  ; \
 	pip3 install kubernetes  ; \
-	pip3 install docker-compose  ; \
+	# pip3 install docker-compose  ; \
 	pip3 install colorama  ; \
 	pip3 install gcovr  ; \
 	pip3 install junitparser  ; \
@@ -87,7 +87,7 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install psutil  ; \
 	pip3 install flask  ; \
 	pip3 install gitlabber  ; \
-	pip3 install conan-package-tools  ; \
+	# pip3 install conan-package-tools  ; \
 	pip3 install python-jenkins  ; \
 	pip3 install rtpy  ; \
 	pip3 install flake8  ; \
@@ -102,6 +102,18 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install ansible ; \
 	pip3 install tzdata ; \
 	pip3 install numa ; \
+	pip3 install openai ; \
+	pip3 install langchain ; \
+	pip3 install streamlit ; \
+	pip3 install TensorFlow ; \
+	pip3 install Keras ; \
+	pip3 install Seaborn ; \
+	pip3 install Scikit ; \
+	pip3 install Scikit-learn ; \
+	pip3 install Plotly ; \
+	pip3 install Matplotlib ; \
+	pip3 install PyTorch ; \
+	pip3 install Theano ; \
 	pip3 install Django Jinja2 Scrapy Requests Dash; \	
 	pip3 install git+https://github.com/rancher/client-python.git@master ; \
 	pip3 install pygccxml clang pycparser gitpython; \
