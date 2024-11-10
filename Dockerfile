@@ -3,7 +3,7 @@ FROM zeevb/dev_docker:C_14.02__gcc8.5 As GCC8.5-Image
 
 # ---------------------------------------------------
 
-FROM fedora:40
+FROM fedora:38
 
 USER 0
 
@@ -18,7 +18,7 @@ ARG BENCHMARK_VERSION=1.9.0
 #ENV REQUESTS_CA_BUNDLE=/etc/ca-bundle.crt
 #ENV SSL_CERT_FILE=/etc/ca-bundle.crt
 
-LABEL name="fedora40" \
+LABEL name="fedora38" \
 	  GoogleTestVersion="$GTEST_VERSION" \
 	  BoostVersion="$BOOST_VERSION_DOT" \
 	  #CMakeVersion="$CMAKE_VERSION" \
@@ -146,13 +146,14 @@ RUN \
 	   qcachegrind hostname motif motif-devel gedit colordiff wdiff meld nfs-utils \
 	   cifs-utils samba-client samba xstream perf valgrind java-devel ncurses-devel xterm \
 	   flex bison binutils-devel elfutils-devel elfutils-libelf-devel texinfo zlib-devel cmake pkgconfig hotspot rr \
-	   numad numactl-devel numactl-libs numactl numatop tbb-bind topline \
+	   numad numactl-devel numactl-libs numactl numatop topline \
 	   castxml clang clang-analyzer clang-devel clang-libs clang-resource-filesystem clang-tools-extra python3-clang clang-tools-extra-devel \
 	   helm glab bat ncdu fd-find ripgrep chrony ntpsec \
 	   isl-devel.x86_64 isl-devel.i686 isl.i686 isl.x86_64 gmp gmp-devel \
 	   mpfr  mpfr-devel libmpc libmpc-devel hwloc hwloc-devel hwloc-gui hwloc-plugins \
 	   memkind-devel pciutils-devel pciutils pciutils-devel-static pciutils-libs pcm \
 	   libgphobos-static gcc-gnat gcc-gdc glibc-devel.i686 dejagnu autogen npm && \
+#	   tbb-bind - don't exist in fedoroa 38
     # dnf -y --releasever=37 install kompose  && \
     dnf install -y ngrep hiera lsyncd sshpass lcov jq ccache lapack-devel dwarves  && \
     dnf install -y libasan libasan-static libatomic libatomic-static liblsan liblsan-static libtsan libtsan-static libubsan libubsan-static && \
