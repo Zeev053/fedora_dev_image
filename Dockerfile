@@ -152,7 +152,7 @@ RUN \
 	   isl-devel.x86_64 isl-devel.i686 isl.i686 isl.x86_64 gmp gmp-devel \
 	   mpfr  mpfr-devel libmpc libmpc-devel hwloc hwloc-devel hwloc-gui hwloc-plugins \
 	   memkind-devel pciutils-devel pciutils pciutils-devel-static pciutils-libs pcm \
-	   libgphobos-static gcc-gnat gcc-gdc glibc-devel.i686 dejagnu autogen npm && \
+	   libgphobos-static gcc-gnat gcc-gdc glibc-devel.i686 dejagnu autogen npm conda && \
     # dnf -y --releasever=37 install kompose  && \
     dnf install -y ngrep hiera lsyncd sshpass lcov jq ccache lapack-devel dwarves  && \
     dnf install -y libasan libasan-static libatomic libatomic-static liblsan liblsan-static libtsan libtsan-static libubsan libubsan-static && \
