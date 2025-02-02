@@ -4,7 +4,7 @@ services:
     network_mode: "host"
 #    privileged: true      
     volumes:
-      - /home/zeev/:/temp
+      - ~:/temp
     environment:
       RTD_FULL_NAME: ${RTD_FULL_NAME}
       RTD_USER_NAME: ${USER}

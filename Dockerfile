@@ -114,6 +114,8 @@ RUN dnf -y clean all; dnf -y update ; dnf -y update --refresh  && \
 	pip3 install Matplotlib ; \
 	pip3 install PyTorch ; \
 	pip3 install Theano ; \
+	pip3 install gradio  ; \
+	pip3 install python-dotenv ; \
 	pip3 install Django Jinja2 Scrapy Requests Dash; \	
 	pip3 install git+https://github.com/rancher/client-python.git@master ; \
 	pip3 install pygccxml clang pycparser gitpython; \
@@ -330,7 +332,8 @@ RUN mkdir -p /workspaces && \
     sed -i -e '0,/^\(%wheel\s\+.\+\)/s//#\1/' /etc/sudoers && \
 	useradd -G wheel kube && \
 	echo "kube:1" | chpasswd  && \
-    echo "kube ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+    echo "kube ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
+	sed -i '/PubkeyAcceptedAlgorithms/s/$/,ssh-rsa/' /etc/crypto-policies/back-ends/opensshserver.config
 
 # USER 1000
 

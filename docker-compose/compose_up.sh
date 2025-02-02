@@ -6,7 +6,7 @@ app_ip=$(hostname -i | sed -rn 's/.*(128[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*
 
 source set_user_bash.sh
 cat << EOF > personal.env
-rt_image=zeevb053/fedora-dev:14.06
+rt_image=zeevb053/fedora-dev:14.07
 app_ip=$app_ip
 EOF
 
